@@ -1,10 +1,13 @@
+from pickletools import uint8
+from unittest import result
 import numpy as np
 import cv2
 
-def resize_img(img):
-    img = cv2.resize(img, None, fx=1/2, fy=1/2, interpolation=cv2.INTER_AREA)
-    rows, cols = img.shape[:2]
-    return img, rows, cols
+def crop(img):
+    rows = img.shape[0]
+    start_crop = int(11*rows/18)
+    img = img[start_crop:rows-12, :, :]
+    return img
 
 def abs_sobel_threshold(img, orientation='x', threshold=(20, 100)):
     """
@@ -76,44 +79,78 @@ def get_combined_gradients(img, thresh_x, thresh_y, thresh_mag, thresh_dir):
     # that are likely to be part of lane lines.
     # I am using Red Channel, since it detects white pixels very well. 
     """
-    rows = img.shape[0]
-    # cv2.imshow("name23", img)
+    img = crop(img)
 
     # crop the image to focus on the lanes more
     # crop till rows-12 so that the car part doesn't appear
-    R_channel = img[220:rows-12, :, 2]
-    # cv2.imshow("croped", R_channel)
+    R_channel = img[:,:,2]
 
     sobel_x = abs_sobel_threshold(R_channel, 'x', thresh_x)
     sobel_y = abs_sobel_threshold(R_channel, 'y', thresh_y)
-    # cv2.imshow("sob_x", sobel_x)
-    # cv2.imshow("sob_y", sobel_y)
-    mag_binary = mag_threshold(R_channel, 3, thresh_mag)
-    # cv2.imshow("mag", mag_binary)
-    dir_binary = dir_threshold(R_channel, 15, thresh_dir)
-    # cv2.imshow("dir", dir_binary)
 
-    # combine sobelx, sobely, magnitude & direction measurements
+    mag_binary = mag_threshold(R_channel, 3, thresh_mag)
+    dir_binary = dir_threshold(R_channel, 15, thresh_dir)
+
     gradient_combined = np.uint8(np.zeros_like(dir_binary))
     gradient_combined[((sobel_x > 1) & (mag_binary > 1) & (dir_binary > 1)) | ((sobel_x > 1) & (sobel_y > 1))] = 255
-    # cv2.imshow("gc", gradient_combined)
     return gradient_combined
 
-if __name__ == "__main__":
-    th_sobelx, th_sobely, th_mag, th_dir = (35, 100), (30, 255), (30, 255), (0.7, 1.3)
-    th_h, th_l, th_s = (10, 100), (0, 60), (85, 255)
+def channel_threshold(channel, threshold=(80, 255)):
+    """
+    # This function takes in a channel of an image and
+    # returns thresholded binary image
+    # 
+    """
+    binary_output = np.zeros_like(channel)
+    binary_output[(channel > threshold[0]) & (channel <= threshold[1])] = 255
+    return binary_output
 
-    img_path = "../advanced-lane-detection-for-self-driving-cars-master/output_images/01_undist_img.png"
-    # img_path = "test_images/test6.jpg"
-    img = cv2.imread(img_path)
-    # print(img.shape)
-    # cv2.imshow("name1", img)
-    undistorted_img, rows, cols = resize_img(img)
 
-    combined_gradient = get_combined_gradients(undistorted_img, th_sobelx, th_sobely, th_mag, th_dir)
-    # So that the window won't close immediatly
-    cv2.waitKey(0)
+def get_combined_hls(img, th_h, th_l, th_s):
+    """
+    # This function takes in an image, converts it to HLS colorspace, 
+    # extracts individual channels, applies thresholding on them
+    #
+    """
+    img = crop(img)
 
+    # convert img to hls color space
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    hls = cv2.cvtColor(img, cv2.COLOR_RGB2HLS)
+
+    h = hls[:, :, 0]
+    l = hls[:, :, 1]
+    s = hls[:, :, 2]
+
+    h_channel = channel_threshold(h, th_h)
+    l_channel = channel_threshold(l, th_l)
+    s_channel = channel_threshold(s, th_s)
+
+    hls_combined = np.uint8(np.zeros_like(s_channel))
+    hls_combined[((s_channel > 1) & (l_channel == 0)) | ((s_channel == 0) & (h_channel > 1) & (l_channel > 1))] = 255
+    return hls_combined
+
+def combine_grad_hls(combined_grad, combined_hls):
+    """ 
+    # This function combines gradient and hls images into one.
+    # For binary gradient image, if pixel is bright, set that pixel value in reulting image to 255
+    # For binary hls image, if pixel is bright, set that pixel value in resulting image to 255 
+    # Edit: Assign different values to distinguish them
+    # 
+    """
+
+    r, c = combined_grad.shape
+    half_c = int(c/2)
+    diff = c - 2 * half_c
+    zeros_arr = np.zeros((r, half_c), np.uint8)
+    ones_arr = np.ones((r, half_c + diff), np.uint8)
+    mask = np.concatenate((zeros_arr, ones_arr), axis=1)
+    combined_grad = combined_grad * mask
+
+    result = np.uint8(np.zeros_like(combined_hls))
+    result[(combined_grad>1)] = 255
+    result[combined_hls>1] = 255
+    return result
 
 # RESOURCES
 # cv2.resize ==> https://www.tutorialkart.com/opencv/python/opencv-python-resize-image/
