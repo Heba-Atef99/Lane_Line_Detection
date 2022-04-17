@@ -198,3 +198,53 @@ def get_lane_lines_img(binary_img, left_line, right_line):
     return out_img
 
 
+def draw_lane(img, left_line, right_line, lane_color=(0, 150, 255), road_color=(255, 0, 255)):
+    """ 
+    #---------------------
+    # This function draws lane lines and drivable area on the road
+    # 
+    """
+    # Create an empty image to draw on
+    window_img = np.zeros_like(img)
+
+    window_margin = left_line.window_margin
+    # Get the x coordinates of both the 2 left and right lane lines (driving area left and borders)
+    left_lane_line_x, right_lane_line_x = left_line.allx, right_line.allx
+    #get the y coordinates of the lane lines
+    lane_line_y = left_line.ally
+    
+    """ 
+    # Draw the 2 lane lines
+    """
+    
+    # Recast the x and y points into usable format for cv2.fillPoly()
+    # Make a window around the left lane line with width window_margin/8 on the left of the line and window_margin/8 on the right
+    left_line_window1 = np.array([np.transpose(np.vstack([left_lane_line_x - window_margin/5, lane_line_y]))])
+    left_line_window2 = np.array([np.flipud(np.transpose(np.vstack([left_lane_line_x + window_margin/5, lane_line_y])))])
+    #concatenate the x and y points to make ordered pairs of pixels of the left lane line
+    left_line_pts = np.hstack((left_line_window1, left_line_window2))
+    # Make a window around the right lane line with width window_margin/8 on the left of the line and window_margin/8 on the right
+    right_line_window1 = np.array([np.transpose(np.vstack([right_lane_line_x - window_margin/5, lane_line_y]))])
+    right_line_window2 = np.array([np.flipud(np.transpose(np.vstack([right_lane_line_x + window_margin/5, lane_line_y])))])
+    #concatenate the x and y points to make ordered pairs of pixels of the right lane line
+    right_line_pts = np.hstack((right_line_window1, right_line_window2))
+    
+    # Draw the 2 lane lines onto the blank image
+    cv2.fillPoly(window_img, np.int_([left_line_pts]), lane_color)
+    cv2.fillPoly(window_img, np.int_([right_line_pts]), lane_color)
+    
+    """ 
+    # Draw the driving lane
+    """
+    
+    # Recast the x and y points into usable format for cv2.fillPoly()
+    driving_lane_left_pts = np.array([np.transpose(np.vstack([left_lane_line_x+window_margin/8, lane_line_y]))])
+    driving_lane_right_pts = np.array([np.flipud(np.transpose(np.vstack([right_lane_line_x-window_margin/8, lane_line_y])))])
+    #concatenate the x and y points to make ordered pairs of pixels of the driving lane
+    driving_lane_pts = np.hstack((driving_lane_left_pts, driving_lane_right_pts))
+    
+    # Draw the driving lane onto the warped blank image
+    cv2.fillPoly(window_img, np.int_([driving_lane_pts]), road_color)
+    result = cv2.addWeighted(img, 1, window_img, 0.3, 0)
+
+    return result, window_img
