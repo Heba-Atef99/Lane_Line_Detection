@@ -30,3 +30,13 @@ pathOut=pathIn+'aavideo_EX9.avi'
 fps=1
 time=1 # the duration of each picture in the video
 convert_pictures_to_video(pathIn, pathOut, fps, time) 
+'''
+def pro(image):
+      undist_img = undistort(image)
+      return undist_img
+
+white_output = '/content/final_result.mp4'
+clip1 = VideoFileClip("/content/video/challenge_video.mp4")
+white_clip = clip1.fl_image(pro) #NOTE: this function expects color images!!
+%time white_clip.write_videofile(white_output, audio=False)      
+'''
