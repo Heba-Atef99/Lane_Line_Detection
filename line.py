@@ -306,6 +306,10 @@ def road_measurements(left_line, right_line):
     # calculate direction using X coordinates of left and right lanes 
     direction = ((left_line.endx - left_line.startx) + (right_line.endx - right_line.startx)) / 2
      
+    # if the road is almost straight 
+    if curvature > 2000 and abs(direction) < 100:
+        curvature = -1
+    
 
     center_lane = (right_line.startx + left_line.startx) / 2
     lane_width = right_line.startx - left_line.startx
@@ -317,3 +321,25 @@ def road_measurements(left_line, right_line):
 
     return  curvature
 
+def illustrate_info_panel(img, left_line, right_line):
+    """
+    #---------------------
+    # This function illustrates details below in a panel on top left corner.
+    # - Lane is curving Left/Right
+    # - Radius of Curvature:
+    # - Deviating Left/Right by _% from center.
+    #
+    """
+
+    curvature = road_measurements(left_line, right_line)
+    cv2.putText(img, 'Measurements ', (75, 30), cv2.FONT_HERSHEY_COMPLEX, 0.8, (80, 80, 80), 2)
+
+    if curvature == -1:
+        lane_curve = 'Radius of Curvature : <Straight line>'
+    else:
+        lane_curve = 'Radius of Curvature : {0:0.3f}m'.format(curvature)
+
+    cv2.putText(img, lane_curve, (10, 83), cv2.FONT_HERSHEY_SIMPLEX, 0.50, (100, 100, 100), 1)
+
+
+    return img
