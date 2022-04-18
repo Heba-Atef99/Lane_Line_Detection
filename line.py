@@ -374,8 +374,8 @@ def illustrate_driving_lane_with_topdownview(image, left_line, right_line):
     right_line_pts = np.hstack((right_line_window1, right_line_window2))
 
     # Draw the lane onto the warped blank image
-    cv2.fillPoly(window_img, np.int_([left_line_pts]), (140, 0, 170))
-    cv2.fillPoly(window_img, np.int_([right_line_pts]), (140, 0, 170))
+    cv2.fillPoly(window_img, np.int_([left_line_pts]), (0, 150, 255))
+    cv2.fillPoly(window_img, np.int_([right_line_pts]), (0, 150, 255))
 
     # Recast the x and y points into usable format for cv2.fillPoly()
     pts_left = np.array([np.transpose(np.vstack([right_plotx + lane_offset - lane_width + window_margin / 4, ploty]))])
@@ -383,7 +383,7 @@ def illustrate_driving_lane_with_topdownview(image, left_line, right_line):
     pts = np.hstack((pts_left, pts_right))
 
     # Draw the lane onto the warped blank image
-    cv2.fillPoly(window_img, np.int_([pts]), (0, 160, 0))
+    cv2.fillPoly(window_img, np.int_([pts]), (255, 0, 255))
 
     #window_img[10:133,300:360] = img
     road_map = Image.new('RGBA', image.shape[:2], (0, 0, 0, 0))
