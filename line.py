@@ -248,3 +248,72 @@ def draw_lane(img, left_line, right_line, lane_color=(0, 150, 255), road_color=(
     result = cv2.addWeighted(img, 1, window_img, 0.3, 0)
 
     return result, window_img
+
+def line_curvature(left_lane, right_lane):
+    """ 
+    #---------------------
+    # This function measures curvature of the left and right lane lines
+    # in radians. 
+    # This function is based on code provided in curvature measurement lecture.
+    # 
+    """
+
+    ploty = left_lane.ally
+
+    leftx, rightx = left_lane.allx, right_lane.allx
+
+    leftx = leftx[::-1]     # Reverse to match top-to-bottom in y
+    rightx = rightx[::-1]   # Reverse to match top-to-bottom in y
+
+    # Define y-value where we want radius of curvature so choose the maximum y-value, corresponding to the bottom of the image 
+    y_eval = np.max(ploty)
+
+    # U.S. regulations that require a  minimum lane width of 12 feet or 3.7 meters, 
+    
+    # Below is the calculation of radius of curvature after correcting for scale in x and y
+    # Define conversions in x and y from pixels space to meters
+    lane_width = abs(right_lane.startx - left_lane.startx)
+    ym_per_pix = 30 / 720  # meters per pixel in y dimension
+    xm_per_pix = 3.7*(720/1280) / lane_width  # meters per pixel in x dimension
+
+    # Fit new polynomials to x,y in world space
+    left_fit_cr = np.polyfit(ploty * ym_per_pix, leftx * xm_per_pix, 2)
+    right_fit_cr = np.polyfit(ploty * ym_per_pix, rightx * xm_per_pix, 2)
+    
+    # Calculate the new radii of curvature
+    left_curverad = ((1 + (2 * left_fit_cr[0] * y_eval * ym_per_pix + left_fit_cr[1]) ** 2) ** 1.5) / np.absolute(2 * left_fit_cr[0])
+    right_curverad = ((1 + (2 * right_fit_cr[0] * y_eval * ym_per_pix + right_fit_cr[1]) ** 2) ** 1.5) / np.absolute(2 * right_fit_cr[0])
+    
+    # radius of curvature result
+    left_lane.radius_of_curvature = left_curverad
+    right_lane.radius_of_curvature = right_curverad
+
+def road_measurements(left_line, right_line):
+    """
+    #---------------------
+    # This function calculates and returns follwing measurements:
+    # - Radius of Curvature
+    # - Distance from the Center
+    # - Whether the lane is curving left or right
+    # 
+    """
+
+    line_curvature(left_line, right_line)
+
+    # take average of radius of left curvature and right curvature 
+    curvature = (left_line.radius_of_curvature + right_line.radius_of_curvature) / 2
+
+    # calculate direction using X coordinates of left and right lanes 
+    direction = ((left_line.endx - left_line.startx) + (right_line.endx - right_line.startx)) / 2
+     
+
+    center_lane = (right_line.startx + left_line.startx) / 2
+    lane_width = right_line.startx - left_line.startx
+
+   
+    left_line.curvature = curvature
+
+    right_line.curvature = curvature
+
+    return  curvature
+
