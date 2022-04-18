@@ -18,7 +18,7 @@ def calib():
     imgpoints = []
 
     # Get directory for all calibration images
-    images = glob.glob('/content/camera/calibration*.jpg')
+    images = glob.glob('content/camera/calibration*.jpg')
 
     for indx, fname in enumerate(images):
         img = cv2.imread(fname)
@@ -40,10 +40,10 @@ def calib():
     dist_pickle = {}
     dist_pickle['mtx'] = mtx
     dist_pickle['dist'] = dist
-    pickle.dump( dist_pickle, open('/content/camera/cal_pickle.p', 'wb') )
+    pickle.dump( dist_pickle, open('content/camera/cal_pickle.p', 'wb') )
 
 
-def undistort(img, cal_dir='/content/camera/cal_pickle.p'):
+def undistort(img, cal_dir='content/camera/cal_pickle.p'):
     #cv2.imwrite('camera_cal/test_cal.jpg', dst)
     with open(cal_dir, mode='rb') as f:
         file = pickle.load(f)
