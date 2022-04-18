@@ -13,9 +13,8 @@ def convert_pictures_to_video(pathIn, pathOut, fps, time):
         img=cv2.resize(img,(1000,800))
         height, width, layers = img.shape
         size=(width,height)
+        frame_array.append(img)
 
-        for k in range (time):
-            frame_array.append(img)
     out=cv2.VideoWriter(pathOut,cv2.VideoWriter_fourcc(*'mp4v'), fps,size)
     for i in range(len(frame_array)):
         out.write(frame_array[i])
@@ -24,12 +23,13 @@ def convert_pictures_to_video(pathIn, pathOut, fps, time):
 
 
 #test
-directory= '/content/try'
-pathIn=directory+'/'
-pathOut=pathIn+'aavideo_EX9.avi'
-fps=1
-time=1 # the duration of each picture in the video
-convert_pictures_to_video(pathIn, pathOut, fps, time) 
+# directory= '/content/try'
+# pathIn=directory+'/'
+# pathOut=pathIn+'aavideo_EX9.avi'
+# fps=1
+# time=1 # the duration of each picture in the video
+# convert_pictures_to_video(pathIn, pathOut, fps, time) 
+
 '''
 def pro(image):
       undist_img = undistort(image)

@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 import pickle
 
 
-def undistort_img():
+def calib():
     # Prepare object points 0,0,0 ... 8,5,0
     obj_pts = np.zeros((6*9,3), np.float32)
     obj_pts[:,:2] = np.mgrid[0:9, 0:6].T.reshape(-1,2)
@@ -54,11 +54,11 @@ def undistort(img, cal_dir='/content/camera/cal_pickle.p'):
     return dst
 
 #test:
-img = cv2.imread('/content/test_image/test3.jpg')
-img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-dst = undistort(img)
-f, (ax1, ax2) = plt.subplots(1, 2, figsize=(20,10))
-ax1.imshow(img)
-ax1.set_title('Original Image', fontsize=30)
-ax2.imshow(dst)
-ax2.set_title('Undistorted Image', fontsize=30)
+# img = cv2.imread('/content/test_image/test3.jpg')
+# img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+# dst = undistort(img)
+# f, (ax1, ax2) = plt.subplots(1, 2, figsize=(20,10))
+# ax1.imshow(img)
+# ax1.set_title('Original Image', fontsize=30)
+# ax2.imshow(dst)
+# ax2.set_title('Undistorted Image', fontsize=30)
