@@ -265,22 +265,22 @@ def line_curvature(left_lane, right_lane):
     leftx = leftx[::-1]     # Reverse to match top-to-bottom in y
     rightx = rightx[::-1]   # Reverse to match top-to-bottom in y
 
-    # Define y-value where we want radius of curvature so choose the maximum y-value, corresponding to the bottom of the image 
+    # Choose y-value where we want radius of curvature which is the maximum y-value, corresponding to the bottom of the image 
     y_eval = np.max(ploty)
 
-    # U.S. regulations that require a  minimum lane width of 12 feet or 3.7 meters, 
-    
-    # Below is the calculation of radius of curvature after correcting for scale in x and y
-    # Define conversions in x and y from pixels space to meters
+    # Calculate the width of the lane
     lane_width = abs(right_lane.startx - left_lane.startx)
+    
+    # Define conversions in x and y from pixels space to meters
     ym_per_pix = 30 / 720  # meters per pixel in y dimension
+    # U.S. regulations that require a  minimum lane width of 12 feet or 3.7 meters, 
     xm_per_pix = 3.7*(720/1280) / lane_width  # meters per pixel in x dimension
 
     # Fit new polynomials to x,y in world space
     left_fit_cr = np.polyfit(ploty * ym_per_pix, leftx * xm_per_pix, 2)
     right_fit_cr = np.polyfit(ploty * ym_per_pix, rightx * xm_per_pix, 2)
     
-    # Calculate the new radii of curvature
+    # Calculate the new radii of curvature after correcting for scale in x and y
     left_curverad = ((1 + (2 * left_fit_cr[0] * y_eval * ym_per_pix + left_fit_cr[1]) ** 2) ** 1.5) / np.absolute(2 * left_fit_cr[0])
     right_curverad = ((1 + (2 * right_fit_cr[0] * y_eval * ym_per_pix + right_fit_cr[1]) ** 2) ** 1.5) / np.absolute(2 * right_fit_cr[0])
     
@@ -298,6 +298,7 @@ def road_measurements(left_line, right_line):
     # 
     """
 
+    # Calculate the radii if the left and right lane lines
     line_curvature(left_line, right_line)
 
     # take average of radius of left curvature and right curvature 
@@ -306,20 +307,31 @@ def road_measurements(left_line, right_line):
     # calculate direction using X coordinates of left and right lanes 
     direction = ((left_line.endx - left_line.startx) + (right_line.endx - right_line.startx)) / 2
      
-    # if the road is almost straight 
     if curvature > 2000 and abs(direction) < 100:
         curvature = -1
     
-
+    # Calculate the centre of the lane
     center_lane = (right_line.startx + left_line.startx) / 2
+    # Calculate the width of the lane 
     lane_width = right_line.startx - left_line.startx
 
-   
+    center_car = 720 / 2
+    if center_lane > center_car:
+        deviation = str(round(abs(center_lane - center_car), 3)) + 'm Left of centre'
+    elif center_lane < center_car:
+        deviation = str(round(abs(center_lane - center_car), 3)) + 'm Right of centre'
+    else:
+        deviation = 'by 0 (Centered)'
+        
+        
     left_line.curvature = curvature
-
+    left_line.deviation = deviation
+    
     right_line.curvature = curvature
+    right_line.deviation = deviation
+    
 
-    return  curvature
+    return curvature, deviation
 
 def illustrate_info_panel(img, left_line, right_line):
     """
@@ -331,18 +343,23 @@ def illustrate_info_panel(img, left_line, right_line):
     #
     """
 
-    curvature = road_measurements(left_line, right_line)
+    curvature, deviation = road_measurements(left_line, right_line)
     cv2.putText(img, 'Measurements ', (75, 30), cv2.FONT_HERSHEY_COMPLEX, 0.8, (80, 80, 80), 2)
 
+    #lane_info = 'Lane is ' + road_info
     if curvature == -1:
         lane_curve = 'Radius of Curvature : <Straight line>'
     else:
-        lane_curve = 'Radius of Curvature : {0:0.3f}m'.format(curvature)
+        lane_curve = 'Radius of Curvature = {0:0.3f}(m)'.format(curvature)
+    deviate = 'Vehicle is ' + deviation  # deviating how much from center
 
+    #cv2.putText(img, lane_info, (10, 63), cv2.FONT_HERSHEY_SIMPLEX, 0.50, (100, 100, 100), 1)
     cv2.putText(img, lane_curve, (10, 83), cv2.FONT_HERSHEY_SIMPLEX, 0.50, (100, 100, 100), 1)
+    cv2.putText(img, deviate, (10, 103), cv2.FONT_HERSHEY_SIMPLEX, 0.50, (100, 100, 100), 1)
 
 
     return img
+
 def illustrate_driving_lane_with_topdownview(image, left_line, right_line):
     """
     #---------------------
