@@ -7,6 +7,8 @@ from PIL import Image
 # Define a class to receive the characteristics of each line detection
 class Line:
     def __init__(self):
+        # was the line detected in the last iteration?
+        self.detected = False
         # Set the width of the windows +/- margin
         self.window_margin = 56
         # x values of the fitted line over the last n iterations
@@ -64,7 +66,8 @@ def smoothing(lines, prev_n_lines=3):
 
     return avg_line
 
-def get_lane_lines_img(binary_img, left_line, right_line):
+
+def line_search_reset(binary_img, left_line, right_line):
     """
     #---------------------
     # After applying calibration, thresholding, and a perspective transform to a road image, 
@@ -72,7 +75,17 @@ def get_lane_lines_img(binary_img, left_line, right_line):
     # However, I still need to decide explicitly which pixels are part of the lines 
     # and which belong to the left line and which belong to the right line.
     # 
-    # This get_lane_lines_img is done using histogram and sliding window
+    # This lane line search is done using histogram and sliding window
+    #
+    # The sliding window implementation is based on lecture videos.
+    # 
+    # This function searches lines from scratch, i.e. without using info from previous lines.
+    # However, the search is not entirely a blind search, since I am using histogram information. 
+    #  
+    # Use Cases:
+    #    - Use this function on the first frame
+    #    - Use when lines are lost or not detected in previous frames
+    #
     """
 
     # I first take a histogram along all the columns in the lower half of the image
@@ -192,10 +205,122 @@ def get_lane_lines_img(binary_img, left_line, right_line):
     left_line.startx, right_line.startx = left_line.allx[len(left_line.allx)-1], right_line.allx[len(right_line.allx)-1]
     left_line.endx, right_line.endx = left_line.allx[0], right_line.allx[0]
 
+    # Set detected=True for both lines
+    left_line.detected, right_line.detected = True, True
     
-    
+   
     
     return out_img
+
+
+def line_search_tracking(b_img, left_line, right_line):
+    """
+    #---------------------
+    # This function is similar to `line_seach_reset` function, however, this function utilizes
+    # the history of previously detcted lines, which is being tracked in an object of Line class.
+    # 
+    # Once we know where the lines are, in previous frames, we don't need to do a blind search, but 
+    # we can just search in a window_margin around the previous line position.
+    #
+    # Use Case:
+    #    - Highly targetted search for lines, based on info from previous frame
+    #
+    """
+
+    # Create an output image to draw on and  visualize the result
+    out_img = np.dstack((b_img, b_img, b_img)) * 255
+
+    # Identify the x and y positions of all nonzero pixels in the image
+    nonzero = b_img.nonzero()
+    nonzeroy = np.array(nonzero[0])
+    nonzerox = np.array(nonzero[1])
+
+    # Get margin of windows from Line class. Adjust this number.
+    window_margin = left_line.window_margin
+
+    left_line_fit = left_line.current_fit
+    right_line_fit = right_line.current_fit
+    leftx_min = left_line_fit[0] * nonzeroy ** 2 + left_line_fit[1] * nonzeroy + left_line_fit[2] - window_margin
+    leftx_max = left_line_fit[0] * nonzeroy ** 2 + left_line_fit[1] * nonzeroy + left_line_fit[2] + window_margin
+    rightx_min = right_line_fit[0] * nonzeroy ** 2 + right_line_fit[1] * nonzeroy + right_line_fit[2] - window_margin
+    rightx_max = right_line_fit[0] * nonzeroy ** 2 + right_line_fit[1] * nonzeroy + right_line_fit[2] + window_margin
+
+    # Identify the nonzero pixels in x and y within the window
+    left_inds = ((nonzerox >= leftx_min) & (nonzerox <= leftx_max)).nonzero()[0]
+    right_inds = ((nonzerox >= rightx_min) & (nonzerox <= rightx_max)).nonzero()[0]
+
+    # Extract left and right line pixel positions
+    leftx, lefty = nonzerox[left_inds], nonzeroy[left_inds]
+    rightx, righty = nonzerox[right_inds], nonzeroy[right_inds]
+
+    out_img[lefty, leftx] = [255, 0, 0]
+    out_img[righty, rightx] = [0, 0, 255]
+
+    # Fit a second order polynomial to each
+    left_fit = np.polyfit(lefty, leftx, 2)
+    right_fit = np.polyfit(righty, rightx, 2)
+
+    # Generate x and y values for plotting
+    ploty = np.linspace(0, b_img.shape[0] - 1, b_img.shape[0])
+
+    # ax^2 + bx + c
+    left_plotx = left_fit[0] * ploty ** 2 + left_fit[1] * ploty + left_fit[2]
+    right_plotx = right_fit[0] * ploty ** 2 + right_fit[1] * ploty + right_fit[2]
+
+    leftx_avg = np.average(left_plotx)
+    rightx_avg = np.average(right_plotx)
+
+    left_line.prevx.append(left_plotx)
+    right_line.prevx.append(right_plotx)
+
+    if len(left_line.prevx) > 10:  # take at least 10 previously detected lane lines for reliable average
+        left_avg_line = smoothing(left_line.prevx, 10)
+        left_avg_fit = np.polyfit(ploty, left_avg_line, 2)
+        left_fit_plotx = left_avg_fit[0] * ploty ** 2 + left_avg_fit[1] * ploty + left_avg_fit[2]
+        left_line.current_fit = left_avg_fit
+        left_line.allx, left_line.ally = left_fit_plotx, ploty
+    else:
+        left_line.current_fit = left_fit
+        left_line.allx, left_line.ally = left_plotx, ploty
+
+    if len(right_line.prevx) > 10: # take at least 10 previously detected lane lines for reliable average
+        right_avg_line = smoothing(right_line.prevx, 10)
+        right_avg_fit = np.polyfit(ploty, right_avg_line, 2)
+        right_fit_plotx = right_avg_fit[0] * ploty ** 2 + right_avg_fit[1] * ploty + right_avg_fit[2]
+        right_line.current_fit = right_avg_fit
+        right_line.allx, right_line.ally = right_fit_plotx, ploty
+    else:
+        right_line.current_fit = right_fit
+        right_line.allx, right_line.ally = right_plotx, ploty
+
+    # Compute Standard Deviation of the distance between X positions of pixels of left and right lines
+    # If this STDDEV is too high, then we need to reset our line search, using line_search_reset
+    stddev = np.std(right_line.allx - left_line.allx)
+
+    if (stddev > 80):
+        left_line.detected = False
+
+    left_line.startx, right_line.startx = left_line.allx[len(left_line.allx) - 1], right_line.allx[len(right_line.allx) - 1]
+    left_line.endx, right_line.endx = left_line.allx[0], right_line.allx[0]
+
+
+    
+    return out_img
+
+
+def get_lane_lines_img(binary_img, left_line, right_line):
+    """
+    #---------------------
+    # This function finds left and right lane lines and isolates them. 
+    # If first frame or detected==False, it uses line_search_reset,
+    # else it tracks/finds lines using history of previously detected lines, with line_search_tracking
+    # 
+    """
+    
+    if left_line.detected == False:
+        return line_search_reset(binary_img, left_line, right_line)
+    else:
+        return line_search_tracking(binary_img, left_line, right_line)
 
 
 def draw_lane(img, left_line, right_line, lane_color=(0, 150, 255), road_color=(255, 0, 255)):
