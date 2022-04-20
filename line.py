@@ -538,4 +538,3 @@ def illustrate_driving_lane_with_topdownview(image, left_line, right_line):
     road_map = cv2.cvtColor(road_map, cv2.COLOR_BGRA2BGR)
 
     return road_map
-
