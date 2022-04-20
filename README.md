@@ -51,7 +51,7 @@ We applied this distortion correction to avoid camera distortion which lead to e
 We collect objectpoint using chessboard corners which it is  same for each calibration image .
 
 ### step2:  Cropping
- We are cropping the image and resize the image to smaller dimensions to help in making the image processing pipeline faster.
+We are cropping the image and resize the image to smaller dimensions to help in making the image processing pipeline faster.
 
 ### step3:  Thresholding
 We used two methods of thresholding: Gradient Thresholing & HLS Thresholding. Sobel Kernel for gradient thresholding in both X and Y directions and HLS to handle cases when the road color is too bright or too light.
@@ -63,10 +63,10 @@ We do perspective transform to get birds-eye view .we take 4 points in a trapezo
 We use that information and use a sliding window,placed around the line centers, to find and follow lane lines from bottom to the top of the frame.
 
 ### step6:  Radius of the curvature
- We use their x and y pixel of the lane lines
+We use their x and y pixel of the lane lines
 
 ### step7:Illustrating Lane Lines on image
-we illustrate the lane on the current frame, by overlaying color pixels on top of the image.
+We illustrate the lane on the current frame, by overlaying color pixels on top of the image.
 
 
 
