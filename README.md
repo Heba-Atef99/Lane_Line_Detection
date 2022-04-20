@@ -40,9 +40,9 @@ if mode=1 the debug mode is activated and the output is a video showing all stag
 ### Video File References:
 
 [input project video](content/input_video/project_video.mp4) <br />
-[output project video ](content/project_final_result.mp4) <br />
+[output project video ](content/project_video_d1.mp4) <br />
 [input challenge video](content/input_video/challenge_video.mp4) <br />
-[output challenge video](content/challenge_final_result.mp4) <br />
+[output challenge video](content/challenge_video_d1.mp4) <br />
 
 
 ### Implementation Details:
