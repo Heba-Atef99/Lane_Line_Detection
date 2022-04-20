@@ -63,7 +63,7 @@ We do perspective transform to get birds-eye view .we take 4 points in a trapezo
 We use that information and use a sliding window,placed around the line centers, to find and follow lane lines from bottom to the top of the frame.
 
 ### step6:  Radius of the curvature
-We use their x and y pixel of the lane lines
+We use their x and y pixel of the lane lines ,to fit a second order polynomial curve.
 
 ### step7:Illustrating Lane Lines on image
 We illustrate the lane on the current frame, by overlaying color pixels on top of the image.
