@@ -1,8 +1,6 @@
 # Lane_Line_Detection
 
 
-
-
 ### Dependencies:
 
     Python 3.5.x
@@ -14,10 +12,12 @@
     moviepy
 
 ### How to run the project?
+
 Open Anaconda cmd 
 Run the command ./run.sh input_video_path output_video_path mode
 if mode=0 then debug mode is not deactivated and the output is a video for only the final stage
 if mode=1 the debug mode is not activated and the output is a video showing all stages
+
 
 ### Objectives:
 
