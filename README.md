@@ -13,13 +13,16 @@
 
 ### How to run the project?
 
-Open Anaconda cmd 
-Run the command 
+Open Anaconda cmd ,with the environment on which you installed these dependencies, in the same path as run.sh.
+
+
+Then run the command 
 
     run.sh input_video_path output_video_path mode
     
-if mode=0 then debug mode is not deactivated and the output is a video for only the final stage
-if mode=1 the debug mode is not activated and the output is a video showing all stages
+if mode=0 then debug mode is deactivated and the output is a video for only the final stage
+
+if mode=1 the debug mode is activated and the output is a video showing all stages
 
 
 ### Objectives:
@@ -34,12 +37,12 @@ if mode=1 the debug mode is not activated and the output is a video showing all 
 * Output visual display of the lane boundaries and numerical estimation of lane curvature and vehicle position.
 
 
-### (Video File References):
+### Video File References:
 
-[project_video_in]: ./content/input_video/project_video.mp4 
-[project_video_out]: ./content/project_final_result.mp4 
-[challenge_video_in]: ./content/input_video/challenge_video.mp4 
-[challenge_video_out]: ./content/challenge_final_result.mp4 
+[input project video](content/input_video/project_video.mp4) <br />
+[output project video ](content/project_final_result.mp4) <br />
+[input challenge video](content/input_video/challenge_video.mp4) <br />
+[output challenge video](content/challenge_final_result.mp4) <br />
 
 
 ### Implementation Details:
@@ -70,7 +73,3 @@ We use their x and y pixel of the lane lines ,to fit a second order polynomial c
 
 ### step7:Illustrating Lane Lines on image
 We illustrate the lane on the current frame, by overlaying color pixels on top of the image.
-
-
-
-
