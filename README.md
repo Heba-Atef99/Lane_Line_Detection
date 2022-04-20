@@ -47,23 +47,23 @@ if mode=1 the debug mode is not activated and the output is a video showing all 
 [`process.py`](process.py) : Contains the image processing pipeline and main function <br />
 
 ### step1: Camera Calibration
-we applied this distortion correction to avoid camera distortion which lead to erros in calculations.
-we collect objectpoint using chessboard corners which it is  same for each calibration image .
+We applied this distortion correction to avoid camera distortion which lead to erros in calculations.
+We collect objectpoint using chessboard corners which it is  same for each calibration image .
 
 ### step2:  Cropping
- we are cropping the image and resize the image to smaller dimensions to help in making the image processing pipeline faster.
+ We are cropping the image and resize the image to smaller dimensions to help in making the image processing pipeline faster.
 
 ### step3:  Thresholding
-we used two methods of thresholding: Gradient Thresholing & HLS Thresholding. Sobel Kernel for gradient thresholding in both X and Y directions and HLS to handle cases when the road color is too bright or too light.
+We used two methods of thresholding: Gradient Thresholing & HLS Thresholding. Sobel Kernel for gradient thresholding in both X and Y directions and HLS to handle cases when the road color is too bright or too light.
 
 ### step4:  Birds-Eye View
-we do perspective transform to get birds-eye view .we take 4 points in a trapezoidal shape that would represent a rectangle when looking down from road above
+We do perspective transform to get birds-eye view .we take 4 points in a trapezoidal shape that would represent a rectangle when looking down from road above
 
 ### step5:  Sliding Window Search
-we use that information and use a sliding window,placed around the line centers, to find and follow lane lines from bottom to the top of the frame.
+We use that information and use a sliding window,placed around the line centers, to find and follow lane lines from bottom to the top of the frame.
 
 ### step6:  Radius of the curvature
- we use their x and y pixel positions, to fit a second order polynomial curve
+ We use their x and y pixel of the lane lines
 
 ### step7:Illustrating Lane Lines on image
 we illustrate the lane on the current frame, by overlaying color pixels on top of the image.
