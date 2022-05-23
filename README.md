@@ -51,6 +51,9 @@ if mode=1 the debug mode is activated and the output is a video showing all stag
 [`threshold.py`](threshold.py) : Contains functions for thresholding an image <br />
 [`process.py`](process.py) : Contains the image processing pipeline and main function <br />
 
+### Pipeline
+<img src="content/assets/pipeline.png">
+
 ### step1: Camera Calibration
 We applied this distortion correction to avoid camera distortion which lead to erros in calculations.
 We collect objectpoint using chessboard corners which it is  same for each calibration image .
@@ -79,10 +82,10 @@ We illustrate the lane on the current frame, by overlaying color pixels on top o
 
 ## Dependencies:
 
-statistics
-tensorflow.python.framework.ops
-google.colab
-imageai.Detection
+    statistics
+    tensorflow.python.framework.ops
+    google.colab
+    imageai.Detection
 
 
 ## How to run phase 2?
@@ -103,6 +106,20 @@ In this phase we detect the cars as well as detecting the lane line as in phase 
 [output challenge video](https://drive.google.com/file/d/1-CzQciImSJNzF15co-7BANF7t0rWvcTh/view?usp=sharing)<br/> "with debug mode =0"
 [input challenge video](https://drive.google.com/file/d/1y_SDPE2ap3Q_6lJt3P2DeAnLwRGLC0mM/view?usp=sharing)<br/> 
 
+## Implementation
+An improved Tiny YOLOv3 (you look only once) algorithm is proposed with both lightweight and high accuracy of object detection. 
+
+The improved Tiny YOLOv3 uses:
+ - K-means clustering to estimate the size of the anchor boxes for dataset.
+ - The pooling and convolution layers are added in the network to strengthen feature fusion and reduce parameters. 
+ - The network structure increases upsampling and downsampling to enhance multi-scale fusion. 
+ - The complete intersection over union is added in the loss function, which effectively improves the detection results. 
+ 
+In addition, the proposed method has the lightweight module size and can be trained in the CPU. The experimental results show that the proposed method can meet the requirements of the detection speed and accuracy.
+
+And here is the architecture of YOLO v3-Tiny
+
+<img src="content/assets/YOLOv3-tiny-Network.png">
 
 ## Important Note:
 
