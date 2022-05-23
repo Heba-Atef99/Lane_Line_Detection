@@ -136,4 +136,5 @@ To solve that error:
   to 
 
   ``` from keras.layers import BatchNormalization ```
+
 3. Save the changes
