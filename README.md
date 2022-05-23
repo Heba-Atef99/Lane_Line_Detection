@@ -86,19 +86,23 @@ google.colab
 imageai.Detection
 
 
+### How to run phase 2?
+
+Open colab and upload projectpart2 file
+
+Then from Runtime choose "Change runtime type" and select GPU
+
+### Objectives:
+
+In this phase we detect the cars as well as detecting the lane line as in phase 1.
+
+
 ### Video File References:
 
 [output project video ](https://drive.google.com/file/d/1-IJokWquuX2axc0myjrIZMnKw9GsgxJL/view?usp=sharing)<br/> "with debug mode=1"
 [input project video](https://drive.google.com/file/d/18Zys9q5qphMjj_HbT79uUe0WsM0UyfiJ/view?usp=sharing)<br/> 
 [output challenge video](https://drive.google.com/file/d/1-CzQciImSJNzF15co-7BANF7t0rWvcTh/view?usp=sharing)<br/> "with debug mode =0"
 [input challenge video](https://drive.google.com/file/d/1y_SDPE2ap3Q_6lJt3P2DeAnLwRGLC0mM/view?usp=sharing)<br/> 
-
-
-### How to run phase 2?
-
-Open colab and upload projectpart2 file
-
-Then from Runtime choose "Change runtime type" and select GPU
 
 
 ### Important Note:
