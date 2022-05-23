@@ -73,3 +73,32 @@ We use their x and y pixel of the lane lines ,to fit a second order polynomial c
 
 ### step7:Illustrating Lane Lines on image
 We illustrate the lane on the current frame, by overlaying color pixels on top of the image.
+
+
+### Phase Two Car detetection
+
+### Dependencies:
+statistics
+tensorflow.python.framework.ops
+google.colab
+imageai.Detection
+### Video File References:
+[output project video](https://drive.google.com/drive/folders/133RiD4zuUSST78jQqfWQcLJ-_DjoHhIV?usp=sharing<br/>
+[input project video](https://drive.google.com/drive/folders/165POD6UGgubxkBku5nv9JcbQ2C25vXxo?usp=sharing)<br/>
+### How to run the project?
+open colab then upload project
+
+
+### Note
+Note that while importing ```from imageai.Detection import VideoObjectDetection``` it'll result in an error.
+To solve that error:
+1. Open this file (/usr/local/lib/python3.7/dist-packages/imageai/Detection/YOLOv3/models.py)
+
+2. Change code at line 8 from 
+
+  ```from keras.layers.normalization import BatchNormalization``` 
+
+  to 
+
+  ``` from keras.layers import BatchNormalization ```
+3. Save the changes
