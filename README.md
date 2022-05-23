@@ -1,7 +1,7 @@
-#### Phase 1 : Lane_Line_Detection
+# Phase 1 : Lane_Line_Detection
 
 
-### Dependencies:
+## Dependencies:
 
     Python 3.5.x
     NumPy
@@ -11,7 +11,7 @@
     PIL
     moviepy
 
-### How to run phase 1 ?
+## How to run phase 1 ?
 
 Open Anaconda cmd ,with the environment on which you installed these dependencies, in the same path as run.sh.
 
@@ -24,7 +24,7 @@ if mode=0 then debug mode is deactivated and the output is a video for only the 
 if mode=1 the debug mode is activated and the output is a video showing all stages
 
 
-### Objectives:
+## Objectives:
 
 * Compute the camera calibration matrix and distortion coefficients using a set of chessboard images.
 * Apply a distortion correction to video frames.
@@ -36,7 +36,7 @@ if mode=1 the debug mode is activated and the output is a video showing all stag
 * Output visual display of the lane boundaries and numerical estimation of lane curvature and vehicle position.
 
 
-### Video File References:
+## Video File References:
 
 [input project video](content/input_video/project_video.mp4) <br />
 [output project video ](content/project_video_d1.mp4) <br />
@@ -44,7 +44,7 @@ if mode=1 the debug mode is activated and the output is a video showing all stag
 [output challenge video](content/challenge_video_d1.mp4) <br />
 
 
-### Implementation Details:
+## Implementation Details:
 
 [`camera_calibration.py`](camera_calibration.py) : To calculate Calibration Matrix <br />
 [`line.py`](line.py) : Line class, contains functions to detect lane lines <br />
@@ -73,12 +73,11 @@ We use their x and y pixel of the lane lines ,to fit a second order polynomial c
 ### step7:Illustrating Lane Lines on image
 We illustrate the lane on the current frame, by overlaying color pixels on top of the image.
 
-###  ###  ###  ###  ###  ###  ###  ###  ###  ###  ###  ###  ###  ###  ###  ###  ###  ###  ###  ###  ###  ###  ###  ###  ###  ###  ###  ###  ###  ###  ###  ###
+<hr>
 
+# Phase 2: Car_Detetection with the Lane_Line_Detection
 
-#### Phase 2: Car_Detetection with the Lane_Line_Detection
-
-### Dependencies:
+## Dependencies:
 
 statistics
 tensorflow.python.framework.ops
@@ -86,18 +85,18 @@ google.colab
 imageai.Detection
 
 
-### How to run phase 2?
+## How to run phase 2?
 
 Open colab and upload projectpart2 file
 
 Then from Runtime choose "Change runtime type" and select GPU
 
-### Objectives:
+## Objectives:
 
 In this phase we detect the cars as well as detecting the lane line as in phase 1.
 
 
-### Video File References:
+## Video File References:
 
 [output project video ](https://drive.google.com/file/d/1-IJokWquuX2axc0myjrIZMnKw9GsgxJL/view?usp=sharing)<br/> "with debug mode=1"
 [input project video](https://drive.google.com/file/d/18Zys9q5qphMjj_HbT79uUe0WsM0UyfiJ/view?usp=sharing)<br/> 
@@ -105,7 +104,7 @@ In this phase we detect the cars as well as detecting the lane line as in phase 
 [input challenge video](https://drive.google.com/file/d/1y_SDPE2ap3Q_6lJt3P2DeAnLwRGLC0mM/view?usp=sharing)<br/> 
 
 
-### Important Note:
+## Important Note:
 
 On importing ```from imageai.Detection import VideoObjectDetection``` it'll result in an error.
 
