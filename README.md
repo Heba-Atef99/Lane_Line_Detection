@@ -1,4 +1,4 @@
-# Lane_Line_Detection
+#### Phase 1 : Lane_Line_Detection
 
 
 ### Dependencies:
@@ -11,10 +11,9 @@
     PIL
     moviepy
 
-### How to run the project?
+### How to run phase 1 ?
 
 Open Anaconda cmd ,with the environment on which you installed these dependencies, in the same path as run.sh.
-
 
 Then run the command 
 
@@ -74,24 +73,40 @@ We use their x and y pixel of the lane lines ,to fit a second order polynomial c
 ### step7:Illustrating Lane Lines on image
 We illustrate the lane on the current frame, by overlaying color pixels on top of the image.
 
+###  ###  ###  ###  ###  ###  ###  ###  ###  ###  ###  ###  ###  ###  ###  ###  ###  ###  ###  ###  ###  ###  ###  ###  ###  ###  ###  ###  ###  ###  ###  ###
 
-### Phase Two Car detetection
+
+#### Phase 2: Car_Detetection with the Lane_Line_Detection
 
 ### Dependencies:
+
 statistics
 tensorflow.python.framework.ops
 google.colab
 imageai.Detection
+
+
 ### Video File References:
-[output project video](https://drive.google.com/drive/folders/133RiD4zuUSST78jQqfWQcLJ-_DjoHhIV?usp=sharing<br/>
-[input project video](https://drive.google.com/drive/folders/165POD6UGgubxkBku5nv9JcbQ2C25vXxo?usp=sharing)<br/>
-### How to run the project?
-open colab then upload project
+
+[output project video ](https://drive.google.com/file/d/1-IJokWquuX2axc0myjrIZMnKw9GsgxJL/view?usp=sharing)<br/> "with debug mode=1"
+[input project video](https://drive.google.com/file/d/18Zys9q5qphMjj_HbT79uUe0WsM0UyfiJ/view?usp=sharing)<br/> 
+[output challenge video](https://drive.google.com/file/d/1-CzQciImSJNzF15co-7BANF7t0rWvcTh/view?usp=sharing)<br/> "with debug mode =0"
+[input challenge video](https://drive.google.com/file/d/1y_SDPE2ap3Q_6lJt3P2DeAnLwRGLC0mM/view?usp=sharing)<br/> 
 
 
-### Note
-Note that while importing ```from imageai.Detection import VideoObjectDetection``` it'll result in an error.
+### How to run phase 2?
+
+Open colab and upload projectpart2 file
+
+Then from Runtime choose "Change runtime type" and select GPU
+
+
+### Important Note:
+
+On importing ```from imageai.Detection import VideoObjectDetection``` it'll result in an error.
+
 To solve that error:
+
 1. Open this file (/usr/local/lib/python3.7/dist-packages/imageai/Detection/YOLOv3/models.py)
 
 2. Change code at line 8 from 
